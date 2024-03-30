@@ -46,7 +46,7 @@ class Receipt implements JsonSerializable {
             "Price" => $price,
             "Quantity" => $quantity,
             "Amount" => $amount,
-            "Tax" => $tax->value,
+            "Tax" => $tax->name,
         ];
         return $this;
     }
@@ -56,7 +56,7 @@ class Receipt implements JsonSerializable {
         return [
             "Email" => $this->email,
             "Phone" => $this->phone,
-            "Taxation" => $this->taxation->value,
+            "Taxation" => $this->taxation->name,
             "Items" =>  $this->items
         ];
     }
