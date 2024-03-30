@@ -11,7 +11,7 @@ use marksync_libs\_markers\payments;
 abstract class AbstractTinkoffBank {
     use payments;
 
-    protected $baseUrl = 'https://securepay.tinkoff.ru/v2/';
+    protected $baseUrl = 'https://securepay.tinkoff.ru/v2';
     protected ?int $terminalId  = null;
     protected ?string $password = null;
 
