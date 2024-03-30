@@ -1,0 +1,17 @@
+{
+    "name": "marksync\/libs",
+    "description": "libs",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "marksync_libs\\": "src\/"
+        }
+    },
+    "require": {
+        "marksync/provider": "^1.0"
+    },
+    "scripts": {
+        "mark": "php vendor\/bin\/mark"
+    }
+}
