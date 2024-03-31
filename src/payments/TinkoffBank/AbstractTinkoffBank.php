@@ -18,6 +18,15 @@ abstract class AbstractTinkoffBank {
     protected string $language = 'ru';
     protected array $main = [];
 
+
+    function init(string $orderId)
+    {
+        return $this->bankApi->fetch('Init', [
+            "OrderId" => $orderId,
+        ]);
+    }
+
+
     function fetch(string $method, array $props)
     {
         if (is_null($this->terminalId))
