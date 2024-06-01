@@ -52,7 +52,7 @@ class Receipt implements JsonSerializable {
     }
 
 
-    function jsonSerialize() {
+    function jsonSerialize(): mixed {
         return [
             "Email" => $this->email,
             "Phone" => $this->phone,
