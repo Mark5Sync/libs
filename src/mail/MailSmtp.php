@@ -9,7 +9,7 @@ abstract class MailSmtp {
     private PHPMailer $mail;
 
     protected string $host;
-    protected string $port;
+    protected int $port;
     protected string $secure;
     protected bool $auth;
     
