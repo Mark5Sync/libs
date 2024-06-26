@@ -1,10 +1,11 @@
-<?php 
+<?php
 
 namespace marksync_libs\mail;
 
 use PHPMailer\PHPMailer\PHPMailer;
 
-abstract class MailSmtp {
+abstract class MailSmtp
+{
 
     private PHPMailer $mail;
 
@@ -12,16 +13,21 @@ abstract class MailSmtp {
     protected int $port;
     protected string $secure;
     protected bool $auth;
-    
-    
+
+
     protected ?string $fromName = null;
 
     protected string $login;
     protected string $password;
 
 
+    function __construct()
+    {
+        $this->init();
+    }
 
-    final function __construct()
+
+    protected function init()
     {
         $this->mail = new PHPMailer(true);
         $this->mail->isSMTP();
@@ -52,5 +58,4 @@ abstract class MailSmtp {
         $this->mail->Subject = $header;
         $this->mail->send();
     }
-
 }
