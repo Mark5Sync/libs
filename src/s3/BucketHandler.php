@@ -2,7 +2,9 @@
 
 namespace marksync_libs\s3;
 
+use Aws\Exception\AwsException;
 use marksync_libs\_markers\s3;
+use marksync_libs\s3\results\BucketListResult;
 
 abstract class BucketHandler
 {
@@ -25,16 +27,24 @@ abstract class BucketHandler
 
 
 
-    function getList()
+    function getList(?string $prefix = null)
     {
-        $this->s3Connection->client->listObjects([
-            'Bucket' => $this->bucket
+        $result = $this->s3Connection->client->listObjectsV2([
+            'Bucket' => $this->bucket,
+            'Prefix' => $prefix,
         ]);
+
+        return new BucketListResult($result, $prefix);
     }
 
 
-    function getContent(string $file)
+    function getContent(string $file): string
     {
-        return null;
+        $result = $this->s3Connection->client->getObject([
+            'Bucket' => $this->bucket,
+            'Key'    => $file,
+        ]);
+
+        return $result['Body'];
     }
 }
