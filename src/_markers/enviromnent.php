@@ -1,18 +1,15 @@
 <?php
 namespace marksync_libs\_markers;
 use marksync\provider\provider;
-use marksync_libs\libx\Translit;
-use marksync_libs\libx\Env;
+use marksync_libs\enviromnent\Env;
 
 /**
- * @property-read Translit $translit
  * @property-read Env $env
 
 */
-trait libx {
+trait enviromnent {
     use provider;
 
-   function createTranslit(): Translit { return new Translit; }
    function createEnv(): Env { return new Env; }
 
 }
