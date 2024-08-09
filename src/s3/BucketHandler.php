@@ -48,25 +48,25 @@ abstract class BucketHandler
     }
 
 
-    function forList(?string $prefix = null, int $maxKeys = 100) 
+    function forList(?string $prefix = null, int $maxKeys = 100)
     {
         $nextContinuationToken = null;
-        
+
         do {
             $result = $this->s3Connection->client->listObjectsV2([
                 'Bucket' => $this->bucket,
                 'Prefix' => $prefix,
-                'NextContinuationToken' => $nextContinuationToken,
+                'ContinuationToken' => $nextContinuationToken,
                 'MaxKeys' => $maxKeys,
             ]);
 
             foreach ($result['Contents'] as ['Key' => $key]) {
                 yield $key;
             }
-            
-            if (isset($result['NextContinuationToken']))
+
+            if ($result['IsTruncated'])
                 $nextContinuationToken = $result['NextContinuationToken'];
-            
+
         } while ($result['IsTruncated']);
     }
 }
