@@ -37,14 +37,40 @@ abstract class BucketHandler
     }
 
 
-    function getContent(string $file): string
+    function getContent(string $key): string
     {
         $result = $this->s3Connection->client->getObject([
             'Bucket' => $this->bucket,
-            'Key'    => $file,
+            'Key'    => $key,
         ]);
 
         return $result['Body'];
+    }
+
+
+    function forCsvContent(string $key, string $separator = ',')
+    {
+        $result = $this->s3Connection->client->getObject([
+            'Bucket' => $this->bucket,
+            'Key'    => $key,
+        ]);
+
+        $csv = fopen('php://temp', 'r+');
+
+        fwrite($csv, $result['Body']);
+        rewind($csv);
+
+        $header = null;
+        while (($row = fgetcsv($csv, 0, $separator)) !== false) {
+            if (is_null($header)) {
+                $header = $row;
+                continue;
+            }
+
+            yield array_combine($header, $row);
+        }
+
+        fclose($csv);
     }
 
 
@@ -66,7 +92,6 @@ abstract class BucketHandler
 
             if ($result['IsTruncated'])
                 $nextContinuationToken = $result['NextContinuationToken'];
-
         } while ($result['IsTruncated']);
     }
 }

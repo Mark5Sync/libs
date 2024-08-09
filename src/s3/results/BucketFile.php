@@ -14,17 +14,17 @@ class BucketFile implements JsonSerializable
     public string $subfilename;
 
 
-    function __construct(public string $fullFileName, private ?string $prefix = null)
+    function __construct(public string $key, private ?string $prefix = null)
     {
         [
             'filename' => $this->filename,
             'dirname' => $this->dirname,
             'extension' => $this->extension,
             'basename' => $this->basename,
-        ] = pathinfo($fullFileName);
+        ] = pathinfo($key);
 
 
-        $this->subfilename = !$this->prefix ? $fullFileName : substr($fullFileName, strlen($this->prefix));
+        $this->subfilename = !$this->prefix ? $key : substr($key, strlen($this->prefix));
     }
 
 
@@ -35,7 +35,7 @@ class BucketFile implements JsonSerializable
             'dirname' => $this->dirname,
             'extension' => $this->extension,
             'basename' => $this->basename,
-            'full' => $this->fullFileName,
+            'key' => $this->key,
         ];
     }
 }
