@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "de33ea6f31807789c6bb6b016c6c7dcf",
+    "content-hash": "bbaaf66df24eff144b6e747d7497d763",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -306,6 +306,49 @@
                 }
             ],
             "time": "2024-07-25T09:36:02+00:00"
+        },
+        {
+            "name": "denismitr/translit",
+            "version": "v3.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/denismitr/translit.git",
+                "reference": "97b91ceab59589a73446eb177000f3244388e3d5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/denismitr/translit/zipball/97b91ceab59589a73446eb177000f3244388e3d5",
+                "reference": "97b91ceab59589a73446eb177000f3244388e3d5",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.2"
+            },
+            "require-dev": {
+                "phpspec/phpspec": "^6.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Denismitr\\Translit\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Denis Mitrofanov",
+                    "email": "denis.mitr@gmail.com"
+                }
+            ],
+            "description": "Russian-English Yandex transliteration package primarily for making slugs",
+            "support": {
+                "issues": "https://github.com/denismitr/translit/issues",
+                "source": "https://github.com/denismitr/translit/tree/v3.0.1"
+            },
+            "time": "2020-11-02T09:33:18+00:00"
         },
         {
             "name": "graham-campbell/result-type",

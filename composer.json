@@ -12,7 +12,8 @@
         "marksync/provider": "^1.1",
         "phpmailer/phpmailer": "^6.9",
         "phpunit/php-text-template": "^4.0",
-        "aws/aws-sdk-php": "^3.316"
+        "aws/aws-sdk-php": "^3.316",
+        "denismitr/translit": "^3.0"
     },
     "scripts": {
         "mark": "php vendor\/bin\/mark"
