@@ -74,6 +74,18 @@ abstract class BucketHandler
     }
 
 
+    function getCsvContent(string $key, string $separator = ',')
+    {
+        $result = [];
+
+        foreach ($this->forCsvContent($key, $separator) as $row) {
+            $result[] = $row;
+        }
+
+        return $result;
+    }
+
+
     function forList(?string $prefix = null, int $maxKeys = 100)
     {
         $nextContinuationToken = null;
