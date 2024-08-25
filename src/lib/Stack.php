@@ -2,9 +2,6 @@
 
 namespace marksync_libs\lib;
 
-use marksync\provider\NotMark;
-
-#[NotMark]
 class Stack {
 
     private array $stack = [];
@@ -40,8 +37,8 @@ class Stack {
         if (empty($this->stack))
             return;
 
-        $callback = $this->callback;
-        $callback($this->stack, $this->frize);
+        $callback = $this->callback; 
+        $this->frize = !!$callback($this->stack);
         $this->stack = [];
     }
 }
