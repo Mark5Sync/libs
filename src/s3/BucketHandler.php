@@ -67,7 +67,12 @@ abstract class BucketHandler
                 continue;
             }
 
-            yield array_combine($header, $row);
+
+            if (count($header) != count($row))
+                continue;
+
+            $result = array_combine($header, $row);
+            yield $result;
         }
 
         fclose($csv);
