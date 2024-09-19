@@ -30,7 +30,7 @@ class IndexInstance
 
     function bulk(array $documents)
     {
-        $bulk = new Bulk($this->client);
+        $bulk = new Bulk($this->config->elasticClient->client);
         $bulk->addDocuments($documents);
         $bulk->send();
 
