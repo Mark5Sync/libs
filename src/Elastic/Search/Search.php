@@ -2,6 +2,7 @@
 
 namespace marksync_libs\Elastic\Search;
 
+use Elastica\Index;
 use Elastica\Query;
 use Elastica\Query\MatchPhrase;
 use Elastica\Query\MultiMatch;
@@ -25,16 +26,23 @@ use marksync_libs\Elastic\ElasticIndex;
  * @property-read Search $or
  * @property-read Search $and
  */
-#[Mark(args: ['parent'])]
+#[Mark(args: ['parent'], mode: Mark::LOCAL)]
 class Search
 {
     private $request = [];
     private ?int $page = null;
     private ?int $size = null;
     private int | false | null $pages = false;
+    private Index $index;
+
+    private ?array $highlightTags = null;
+    private ?array $highlightProps = null;
 
 
-    function __construct(private ElasticIndex $index) {}
+    function __construct(private ElasticIndex $config)
+    {
+        $this->index = $config->index->index;
+    }
 
     function fetch()
     {
@@ -67,31 +75,66 @@ class Search
 
         $query = new Query($boolQuery);
         $this->updateLimits($query);
+        $this->setHighlight($query);
 
 
-        $results = $this->index->index->index->search($query);
+        $results = $this->index->search($query);
         $this->setPages($results->getTotalHits());
 
-
+        $result = $this->config->index->resultToArray($results, $this->highlightProps);
         $this->reset();
-        return $this->index->index->resultToArray($results);
-    }
 
 
-    private function setPages($countRows)
-    {
-        if (is_null($this->pages)) {
-            $pagex = $countRows / $this->size;
-            $this->pages = ceil($pagex);
-        }
+
+        return $result;
     }
+
 
 
     private function reset()
     {
         $this->page = null;
         $this->size = null;
+        $this->highlightTags = null;
         $this->request = [];
+    }
+
+
+
+    function highlight(array $highlightTags = ['<mark>', '</mark>'], null &...$props)
+    {
+        $this->highlightTags = $highlightTags;
+        $this->highlightProps = &$props;
+
+        return $this;
+    }
+
+    function setHighlight(Query $query)
+    {
+        $props = [];
+
+        foreach ($this->highlightProps as $prop => $_) {
+            $props[$prop] = [
+                'fragment_size' => 200,
+                'number_of_fragments' => 1,
+            ];
+        }
+
+        $query->setHighlight([
+            'pre_tags' => [$this->highlightTags[0]],
+            'post_tags' => [$this->highlightTags[1]],
+            'fields' => $props,
+        ]);
+    }
+
+
+    private function setPages($countRows)
+    {
+        if (!$this->size)
+            return;
+
+        $pagex = $countRows / $this->size;
+        $this->pages = ceil($pagex);
     }
 
 

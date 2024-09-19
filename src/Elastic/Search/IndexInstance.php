@@ -13,16 +13,15 @@ use Elastica\ResultSet;
 use marksync\provider\Mark;
 use marksync_libs\Elastic\ElasticIndex;
 
-#[Mark(title: 'index', args: ['parent'])]
+#[Mark(title: 'index', args: ['parent'], mode: Mark::LOCAL)]
 class IndexInstance
 {
     public Client $client;
     public Index $index;
 
-    function __construct(ElasticIndex $config)
+    function __construct(private ElasticIndex $config)
     {
-        $this->client = new Client("http://{$config->host}:{$config->port}");
-        $this->index = $this->client->getIndex($config->indexName);
+        $this->index = $config->elasticClient->client->getIndex($config->indexName);
 
         if (!$this->index->exists())
             $this->index->create();
@@ -68,12 +67,22 @@ class IndexInstance
     }
 
 
-    function resultToArray(ResultSet $requestResult)
+    function resultToArray(ResultSet $requestResult, ?array &$highlights = null)
     {
         $result = [];
 
         foreach ($requestResult as $data) {
-            $result[] = $data->getData();
+            $row = $data->getData();
+
+            if (is_array($highlights))
+                foreach ($data->getHighlights() as $key => $value) {
+                    if (is_null($highlights[$key]))
+                        $highlights[$key] = [];
+
+                    $highlights[$key][$row[$key]] = $value;
+                }
+
+            $result[] = $row;
         }
 
         return $result;
