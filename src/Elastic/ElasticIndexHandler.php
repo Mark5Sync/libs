@@ -2,11 +2,6 @@
 
 namespace marksync_libs\Elastic;
 
-use Elastica\Document;
-use Elastica\Exception\Bulk\ResponseException;
-use Elastica\Index;
-use Elastica\Query;
-use Elastica\Query\MatchAll;
 use marksync_libs\_markers\Elastic;
 
 abstract class ElasticIndexHandler
@@ -49,6 +44,11 @@ abstract class ElasticIndexHandler
     function select(int $from = 0, int $size = 10)
     {
         return $this->index->select($from, $size);
+    }
+
+    function match(string | int | bool ...$colls)
+    {
+        return $this->index->match(...$colls);
     }
 
     function deleteIndex()

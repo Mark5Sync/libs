@@ -1,13 +1,17 @@
 <?php
 
-namespace marksync_libs\Elastic;
+namespace marksync_libs\Elastic\Search;
 
 use Elastica\Bulk;
 use Elastica\Client;
 use Elastica\Index;
 use Elastica\Query;
+use Elastica\Query\BoolQuery;
 use Elastica\Query\MatchAll;
+use Elastica\Query\MatchQuery;
+use Elastica\ResultSet;
 use marksync\provider\Mark;
+use marksync_libs\Elastic\ElasticIndex;
 
 #[Mark(title: 'index', args: ['parent'])]
 class IndexInstance
@@ -45,8 +49,30 @@ class IndexInstance
 
         $results = $this->index->search($query);
 
+        return $this->resultToArray($results);
+    }
+
+
+    function match(string | int | bool ...$colls)
+    {
+        $boolQuery = new BoolQuery();
+
+        foreach ($colls as $coll => $value) {
+            $boolQuery->addMust((new MatchQuery($coll, $value)));
+        }
+
+        $query = new Query($boolQuery);
+        $results = $this->index->search($query);
+
+        return $this->resultToArray($results);
+    }
+
+
+    function resultToArray(ResultSet $requestResult)
+    {
         $result = [];
-        foreach ($results as $data) {
+
+        foreach ($requestResult as $data) {
             $result[] = $data->getData();
         }
 
