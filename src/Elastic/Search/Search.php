@@ -21,10 +21,17 @@ use Elastica\Query\MatchQuery;
 use marksync\provider\Mark;
 use marksync_libs\Elastic\ElasticIndex;
 
+/** 
+ * @property-read Search $or
+ * @property-read Search $and
+ */
 #[Mark(args: ['parent'])]
 class Search
 {
     private $request = [];
+    private ?int $page = null;
+    private ?int $size = null;
+    private int | false | null $pages = false;
 
 
     function __construct(private ElasticIndex $index) {}
@@ -34,16 +41,96 @@ class Search
 
         $boolQuery = new BoolQuery();
 
+        $useOperator = 'and';
         foreach ($this->request as $query) {
-            $boolQuery->addMust($query);
+
+            if ($query instanceof Operator) {
+                $useOperator = $query->operator;
+                continue;
+            }
+
+
+            switch ($useOperator) {
+                case 'and':
+                    $boolQuery->addMust($query);
+                    break;
+                case 'or':
+                    $boolQuery->addMustNot($query);
+                    break;
+
+                default:
+                    throw new \Exception("Неизвестный оператор", 9206);
+            }
+
+            $useOperator = 'and';
         }
 
         $query = new Query($boolQuery);
-        $results = $this->index->index->index->search($query);
+        $this->updateLimits($query);
 
+
+        $results = $this->index->index->index->search($query);
+        $this->setPages($results->getTotalHits());
+
+
+        $this->reset();
         return $this->index->index->resultToArray($results);
     }
 
+
+    private function setPages($countRows)
+    {
+        if (is_null($this->pages)) {
+            $pagex = $countRows / $this->size;
+            $this->pages = ceil($pagex);
+        }
+    }
+
+
+    private function reset()
+    {
+        $this->page = null;
+        $this->size = null;
+        $this->request = [];
+    }
+
+
+    function __get($operator)
+    {
+        $this->request[] = match ($operator) {
+            'or', 'and' => new Operator($operator),
+            default => throw new \Exception("Неизвестный оператор {$operator}", 9205),
+        };
+
+        return $this;
+    }
+
+
+    private function updateLimits(Query $query)
+    {
+        if (!is_null($this->page))
+            $query->setFrom($this->page);
+
+        if (!is_null($this->size))
+            $query->setSize($this->size);
+    }
+
+
+    /**
+     * Устанавливает параметры "от" и "размер" для пагинации результатов.
+     *
+     * @param int $from Начальная позиция для поиска (по умолчанию 0)
+     * @param int $size Количество возвращаемых результатов (по умолчанию 10)
+     * @return $this
+     */
+    function page(int $page, int $size, int | false | null &$pages = false)
+    {
+        $this->page = ($page - 1) * $size;
+        $this->size = $size;
+        $this->pages = &$pages;
+
+        return $this;
+    }
 
 
     /**

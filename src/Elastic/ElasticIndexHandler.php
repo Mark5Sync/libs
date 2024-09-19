@@ -2,6 +2,7 @@
 
 namespace marksync_libs\Elastic;
 
+use Elastica\Document;
 use marksync_libs\_markers\Elastic;
 
 abstract class ElasticIndexHandler
@@ -54,6 +55,13 @@ abstract class ElasticIndexHandler
     function deleteIndex()
     {
         $this->index->index->delete();
+    }
+
+    function page(int $offset = 0, int $limit = 10, ?int &$size = null)
+    {
+        $this->search->page($offset, $limit, $size);
+
+        return $this;
     }
 
 
