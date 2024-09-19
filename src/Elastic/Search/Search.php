@@ -116,6 +116,9 @@ class Search
     {
         $props = [];
 
+        if (!$this->highlightProps)
+            return;
+
         foreach ($this->highlightProps as $prop => $_) {
             $props[$prop] = [
                 'fragment_size' => 200,
