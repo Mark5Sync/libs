@@ -38,6 +38,8 @@ class Search
     private ?array $highlightTags = null;
     private ?array $highlightProps = null;
 
+    private ?array $source = null;
+
 
     function __construct(private ElasticIndex $config)
     {
@@ -76,6 +78,7 @@ class Search
         $query = new Query($boolQuery);
         $this->updateLimits($query);
         $this->setHighlight($query);
+        $this->setSource($query);
 
 
         $results = $this->index->search($query);
@@ -125,6 +128,21 @@ class Search
             'post_tags' => [$this->highlightTags[1]],
             'fields' => $props,
         ]);
+    }
+
+
+    function source(bool ...$props)
+    {
+        $this->source = array_keys($props);
+
+        return $this;
+    }
+
+
+    private function setSource(Query $query)
+    {
+        if ($this->source)
+            $query->setSource($this->source);
     }
 
 
