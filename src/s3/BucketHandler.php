@@ -37,6 +37,12 @@ abstract class BucketHandler
     }
 
 
+    function exists(string $key): bool
+    {
+        $result = $this->s3Connection->client->doesObjectExist($this->bucket, $key);
+        return $result;
+    }
+
     function getContent(string $key): string
     {
         $result = $this->s3Connection->client->getObject([
