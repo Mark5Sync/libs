@@ -65,5 +65,11 @@ abstract class ElasticIndexHandler
     }
 
 
+    function setIndexLimit(int $limit) 
+    {
+        $this->limit = $limit;
+    }
+
+
     function search() {}
 }
