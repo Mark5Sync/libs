@@ -54,17 +54,6 @@ abstract class BucketHandler
     }
 
 
-    function putContent(string $key, ?string $body = null, ?string $file = null)
-    {
-        $this->s3Connection->client->putObject([
-            'Bucket' => $this->bucket,
-            'Key'    => $key,
-            'SourceFile' => $file,
-            'Body' => $body,
-        ]);
-    }
-
-
     function forCsvContent(string $key, string $separator = ',')
     {
         $result = $this->s3Connection->client->getObject([
