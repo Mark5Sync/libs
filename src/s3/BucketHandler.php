@@ -43,6 +43,17 @@ abstract class BucketHandler
         return $result;
     }
 
+    function putContent(string $key, ?string $body = null, ?string $file = null)
+    {
+        $this->s3Connection->client->putObject([
+            'Bucket' => $this->bucket,
+            'Key'    => $key,
+            'SourceFile' => $file,
+            'Body' => $body,
+        ]);
+    }
+
+
     function getContent(string $key): string
     {
         $result = $this->s3Connection->client->getObject([
@@ -84,6 +95,7 @@ abstract class BucketHandler
         fclose($csv);
     }
 
+    
 
     function getCsvContent(string $key, string $separator = ',')
     {
