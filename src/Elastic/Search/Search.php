@@ -205,10 +205,13 @@ class Search
      * @param string $query Значение для поиска
      * @return $this
      */
-    public function match(string $field, string $query)
+    public function match(string $field, string $query, ?int $fuzziness = null)
     {
         $matchQuery = new MatchQuery();
-        $matchQuery->setField($field, $query);
+        $matchQuery->setFieldQuery($field, $query);
+        if ($fuzziness)
+                $matchQuery->setFieldFuzziness($field, $fuzziness);
+
         $this->request[] = $matchQuery;
         return $this;
     }
