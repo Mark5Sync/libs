@@ -29,6 +29,18 @@ abstract class ElasticIndexHandler
             $this->fetch();
     }
 
+    function update(string | int $id = null, ...$body)
+    {
+        
+        $document = new Document($id, null, $this->indexName);
+        $document->setData(['doc' => $body]);
+
+        $this->bulk[] = $document;
+        if (count($this->bulk) > $this->limit)
+            $this->fetch();
+    }
+
+
     function fetch()
     {
         if (!empty($this->bulk))
