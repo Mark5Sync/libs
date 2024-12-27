@@ -54,6 +54,15 @@ abstract class BucketHandler
     }
 
 
+    function deleteKey(string $key)
+    {
+        $this->s3Connection->client->deleteObject([
+            'Bucket' => $this->bucket,
+            'Key'    => $key,
+        ]);
+    }
+
+
     function getContent(string $key): string
     {
         $result = $this->s3Connection->client->getObject([
