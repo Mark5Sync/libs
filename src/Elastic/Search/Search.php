@@ -32,7 +32,9 @@ class Search
     private $request = [];
     private ?int $page = null;
     private ?int $size = null;
+    private ?string $paginationType = null;
     private int | false | null $pages = false;
+    private bool $canLoadMore = false;
     private Index $index;
 
     private ?array $highlightTags = null;
@@ -48,7 +50,6 @@ class Search
 
     function fetch()
     {
-
         $boolQuery = new BoolQuery();
 
         $useOperator = 'and';
@@ -75,6 +76,7 @@ class Search
             $useOperator = 'and';
         }
 
+
         $query = new Query($boolQuery);
         $this->updateLimits($query);
         $this->setHighlight($query);
@@ -82,12 +84,21 @@ class Search
 
 
         $results = $this->index->search($query);
-        $this->setPages($results->getTotalHits());
+    
+        switch ($this->paginationType) {
+            case 'pagination':
+                $this->setPages($results->getTotalHits());
+                break;
+            
+            case 'load_more':
+
+                break;
+        }
+            
+
 
         $result = $this->config->index->resultToArray($results, $this->highlightProps);
         $this->reset();
-
-
 
         return $result;
     }
@@ -151,9 +162,6 @@ class Search
 
     private function setPages($countRows)
     {
-        if (!$this->size)
-            return;
-
         $pagex = $countRows / $this->size;
         $this->pages = ceil($pagex);
     }
@@ -189,9 +197,26 @@ class Search
      */
     function page(int $page, int $size, int | false | null &$pages = false)
     {
+        $this->paginationType = 'pagination';
+
         $this->page = ($page - 1) * $size;
         $this->size = $size;
         $this->pages = &$pages;
+
+        return $this;
+    }
+
+
+    /**
+     * +1 к размеру
+     */
+    function loadMore(int $page, int $size, int | false | null &$canLoadMore = false)
+    {
+        $this->paginationType = 'load_more';
+
+        $this->page = ($page - 1) * $size;
+        $this->size = $size +1;
+        $this->canLoadMore = &$canLoadMore;
 
         return $this;
     }

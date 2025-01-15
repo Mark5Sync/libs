@@ -84,4 +84,9 @@ abstract class ElasticIndexHandler
 
 
     function search() {}
+
+    function loadMore($offset, $limit, bool &$canLoadMore = null)
+    {
+        $this->search->loadMore($offset, $limit, $canLoadMore);
+    }
 }
