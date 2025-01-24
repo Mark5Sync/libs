@@ -37,6 +37,26 @@ abstract class BucketHandler
     }
 
 
+    function getFileList(?string $prefix = null)
+    {
+        $result = $this->s3Connection->client->listObjectsV2([
+            'Bucket' => $this->bucket,
+            'Prefix' => $prefix,
+        ]);
+
+        $list = [];
+
+        foreach ($result['Contents'] as ['Key' => $key]) {
+            if ($key == $prefix)
+                continue;
+            
+            $list[] = $key;
+        }
+
+        return $list;
+    }
+
+
     function exists(string $key): bool
     {
         $result = $this->s3Connection->client->doesObjectExist($this->bucket, $key);
