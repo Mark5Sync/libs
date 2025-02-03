@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "28bb91fe9128b94328ed07cbf430f667",
+    "content-hash": "80ba16fdb735ca4e187c08a9112f6ea9",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -1090,6 +1090,44 @@
                 "source": "https://github.com/open-telemetry/opentelemetry-php"
             },
             "time": "2024-01-13T05:50:44+00:00"
+        },
+        {
+            "name": "pego/pego",
+            "version": "v0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/OpencTech/Pego.git",
+                "reference": "7e3f2aff4660fc65a4ebe46b3d986747dbc95641"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/OpencTech/Pego/zipball/7e3f2aff4660fc65a4ebe46b3d986747dbc95641",
+                "reference": "7e3f2aff4660fc65a4ebe46b3d986747dbc95641",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Pego\\": "src/",
+                    "Test\\": "test/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "II",
+                    "email": "index@google.com"
+                }
+            ],
+            "description": "pego",
+            "support": {
+                "issues": "https://github.com/OpencTech/Pego/issues",
+                "source": "https://github.com/OpencTech/Pego/tree/v0.1"
+            },
+            "time": "2025-01-27T03:11:29+00:00"
         },
         {
             "name": "php-http/discovery",

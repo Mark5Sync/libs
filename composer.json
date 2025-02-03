@@ -14,7 +14,8 @@
         "phpunit/php-text-template": "^4.0",
         "aws/aws-sdk-php": "^3.316",
         "denismitr/translit": "^3.0",
-        "ruflin/elastica": "^8.0"
+        "ruflin/elastica": "^8.0",
+        "pego/pego": "^0.1.0"
     },
     "scripts": {
         "mark": "php vendor\/bin\/mark"
