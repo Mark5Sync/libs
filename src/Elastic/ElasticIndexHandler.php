@@ -31,7 +31,6 @@ abstract class ElasticIndexHandler
 
     function update(string | int $id = null, ...$body)
     {
-        
         $document = new Document($id, null, $this->indexName);
         $document->setData(['doc' => $body]);
 

@@ -10,6 +10,19 @@ trait ElasticPegoHandler
 {
     use Elastic2;
 
+    /** 
+     * Подсветка синтаксиса
+    */
+    #[Pego]
+    function __highlight(array $highlightTags = ['<mark>', '</mark>'], null &...$props)
+    {
+        $this->highlightTags = $highlightTags;
+        $this->highlightProps = &$props;
+
+        return $this;
+    }
+
+
     #[Pego]
     function __index(?string $id = null, ...$body)
     {
