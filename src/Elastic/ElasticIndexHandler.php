@@ -3,6 +3,7 @@
 namespace marksync_libs\Elastic;
 
 use Elastica\Document;
+use Elastica\Mapping;
 use marksync_libs\_markers\Elastic;
 
 abstract class ElasticIndexHandler
@@ -65,7 +66,22 @@ abstract class ElasticIndexHandler
 
     function deleteIndex()
     {
-        $this->index->index->delete();
+        if ($this->exists())
+            $this->index->index->delete();
+    }
+
+    function setMapping(array $mapping)
+    {
+        $this->deleteIndex();
+        $this->index->index->create();
+        
+        $mapping = new Mapping($mapping);
+        $mapping->send($this->index->index);
+    }
+
+    function getMapping()
+    {
+        return $this->index->index->getMapping();
     }
 
     function page(int $offset = 0, int $limit = 10, ?int &$size = null)
