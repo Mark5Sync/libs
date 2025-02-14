@@ -136,8 +136,6 @@ abstract class BucketHandler
                 }
         
                 yield array_combine($header, $rowData);
-                
-                unset($cell, $cellIterator, $rowData);
             }
         
         } finally {
@@ -149,8 +147,6 @@ abstract class BucketHandler
             if (file_exists($tempFile)) {
                 unlink($tempFile);
             }
-            
-            gc_collect_cycles();
         }
         
 
