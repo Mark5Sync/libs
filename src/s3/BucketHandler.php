@@ -98,15 +98,18 @@ abstract class BucketHandler
     
     function forXlsxContent(string $key)
     {
-        
-        $result = $this->s3Connection->client->getObject([
+        $file = $this->s3Connection->client->getObject([
             'Bucket' => $this->bucket,
             'Key'    => $key,
         ]);
         
         $tempFile = tempnam(sys_get_temp_dir(), 'xlsx_');
-        file_put_contents($tempFile, $result['Body']->getContents());
+        file_put_contents($tempFile, $file['Body']->getContents());
         
+        unlink($file);
+
+
+
         try {
             $reader = IOFactory::createReader('Xlsx');
             $reader->setReadDataOnly(true);         
@@ -148,8 +151,6 @@ abstract class BucketHandler
                 unlink($tempFile);
             }
         }
-        
-
     }
 
 
