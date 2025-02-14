@@ -103,44 +103,57 @@ abstract class BucketHandler
             'Bucket' => $this->bucket,
             'Key'    => $key,
         ]);
-
+        
         $tempFile = tempnam(sys_get_temp_dir(), 'xlsx_');
-        rename($tempFile, $tempFile .= '.xlsx');
         file_put_contents($tempFile, $result['Body']->getContents());
-
+        
         try {
             $reader = IOFactory::createReader('Xlsx');
-            $spreadsheet = $reader->load($tempFile); 
+            $reader->setReadDataOnly(true);         
+            $reader->setReadEmptyCells(false);  
             
+            $spreadsheet = $reader->load($tempFile);
             $worksheet = $spreadsheet->getActiveSheet();
+        
             $header = [];
-            
             foreach ($worksheet->getRowIterator() as $row) {
-                $cellIterator = $row->getCellIterator();
-                $cellIterator->setIterateOnlyExistingCells(false);
-                
                 $rowData = [];
+                
+                $cellIterator = $row->getCellIterator();
+                $cellIterator->setIterateOnlyExistingCells(true);
+        
                 foreach ($cellIterator as $cell) {
                     $rowData[] = $cell->getFormattedValue();
                 }
-
+        
                 if (empty($header)) {
                     $header = $rowData;
                     continue;
                 }
-
+        
                 if (count($header) !== count($rowData)) {
                     continue;
                 }
-
+        
                 yield array_combine($header, $rowData);
+                
+                unset($cell, $cellIterator, $rowData);
             }
+        
         } finally {
+            if (isset($spreadsheet)) {
+                $spreadsheet->disconnectWorksheets();
+                unset($spreadsheet, $worksheet, $reader);
+            }
             
             if (file_exists($tempFile)) {
                 unlink($tempFile);
             }
+            
+            gc_collect_cycles();
         }
+        
+
     }
 
 
