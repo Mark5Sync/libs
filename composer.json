@@ -15,7 +15,8 @@
         "aws/aws-sdk-php": "^3.316",
         "denismitr/translit": "^3.0",
         "ruflin/elastica": "^8.0",
-        "pego/pego": "^0.1.0"
+        "pego/pego": "^0.1.0",
+        "phpoffice/phpspreadsheet": "^4.0"
     },
     "scripts": {
         "mark": "php vendor\/bin\/mark"

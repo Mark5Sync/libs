@@ -4,6 +4,7 @@ namespace marksync_libs\s3;
 
 use marksync_libs\_markers\s3;
 use marksync_libs\s3\results\BucketListResult;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 
 abstract class BucketHandler
 {
@@ -91,6 +92,55 @@ abstract class BucketHandler
         ]);
 
         return $result['Body'];
+    }
+
+
+    
+    function forXlsxContent(string $key)
+    {
+        
+        $result = $this->s3Connection->client->getObject([
+            'Bucket' => $this->bucket,
+            'Key'    => $key,
+        ]);
+
+        $tempFile = tempnam(sys_get_temp_dir(), 'xlsx_');
+        rename($tempFile, $tempFile .= '.xlsx');
+        file_put_contents($tempFile, $result['Body']->getContents());
+
+        try {
+            $reader = IOFactory::createReader('Xlsx');
+            $spreadsheet = $reader->load($tempFile); 
+            
+            $worksheet = $spreadsheet->getActiveSheet();
+            $header = [];
+            
+            foreach ($worksheet->getRowIterator() as $row) {
+                $cellIterator = $row->getCellIterator();
+                $cellIterator->setIterateOnlyExistingCells(false);
+                
+                $rowData = [];
+                foreach ($cellIterator as $cell) {
+                    $rowData[] = $cell->getFormattedValue();
+                }
+
+                if (empty($header)) {
+                    $header = $rowData;
+                    continue;
+                }
+
+                if (count($header) !== count($rowData)) {
+                    continue;
+                }
+
+                yield array_combine($header, $rowData);
+            }
+        } finally {
+            
+            if (file_exists($tempFile)) {
+                unlink($tempFile);
+            }
+        }
     }
 
 
