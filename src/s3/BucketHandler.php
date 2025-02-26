@@ -106,7 +106,7 @@ abstract class BucketHandler
         $tempFile = tempnam(sys_get_temp_dir(), 'xlsx_');
         file_put_contents($tempFile, $file['Body']->getContents());
         
-        unlink($file);
+        // unlink($file);
 
 
 
