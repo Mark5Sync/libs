@@ -70,13 +70,21 @@ abstract class ElasticIndexHandler
             $this->index->index->delete();
     }
 
-    function setMapping(array $mapping)
+    function setMapping(array $mapping, int $number_of_shards = 1, int $number_of_replicas = 1)
     {
         $this->deleteIndex();
-        $this->index->index->create();
-        
+        $this->create($number_of_shards, $number_of_replicas);
+
         $mapping = new Mapping($mapping);
         $mapping->send($this->index->index);
+    }
+
+    function create(int $number_of_shards = 1, int $number_of_replicas = 1)
+    {
+        $this->index->index->create(options: [
+            "number_of_shards" => $number_of_shards,
+            "number_of_replicas" => $number_of_replicas,
+        ]);
     }
 
     function getMapping()
@@ -92,7 +100,7 @@ abstract class ElasticIndexHandler
     }
 
 
-    function setIndexLimit(int $limit) 
+    function setIndexLimit(int $limit)
     {
         $this->limit = $limit;
     }
