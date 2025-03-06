@@ -123,7 +123,7 @@ abstract class BucketHandler
                 $rowData = [];
                 
                 $cellIterator = $row->getCellIterator();
-                $cellIterator->setIterateOnlyExistingCells(true);
+                $cellIterator->setIterateOnlyExistingCells(false);
         
                 foreach ($cellIterator as $cell) {
                     $rowData[] = $cell->getFormattedValue();
