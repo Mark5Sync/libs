@@ -9,6 +9,7 @@ use Elastica\Query;
 use Elastica\Query\BoolQuery;
 use Elastica\Query\MatchAll;
 use Elastica\Query\MatchQuery;
+use Elastica\Result;
 use Elastica\ResultSet;
 use marksync\provider\Mark;
 use marksync_libs\Elastic\ElasticIndex;
@@ -81,6 +82,21 @@ class IndexInstance
 
                     $highlights[$key][$row[$key]] = $value;
                 }
+
+            $result[] = $row;
+        }
+
+        return $result;
+    }
+
+
+    function getRawResult(ResultSet $requestResult)
+    {
+        $result = [];
+
+        /** @var Result $data  */
+        foreach ($requestResult as $data) {
+            $row = $data->getData();
 
             $result[] = $row;
         }

@@ -3,6 +3,7 @@
 namespace marksync_libs\Elastic;
 
 use Elastica\Document;
+use Elastica\Index\Settings;
 use Elastica\Mapping;
 use marksync_libs\_markers\Elastic;
 
@@ -72,19 +73,44 @@ abstract class ElasticIndexHandler
 
     function setMapping(array $mapping, int $number_of_shards = 1, int $number_of_replicas = 1)
     {
-        $this->deleteIndex();
-        $this->create($number_of_shards, $number_of_replicas);
-
-        $mapping = new Mapping($mapping);
-        $mapping->send($this->index->index);
+        $this->create($mapping, $number_of_shards, $number_of_replicas, );
     }
 
-    function create(int $number_of_shards = 1, int $number_of_replicas = 1)
+    function create(array $mapping, int $number_of_shards = 1, int $number_of_replicas = 1)
     {
-        $this->index->index->create(options: [
-            "number_of_shards" => $number_of_shards,
-            "number_of_replicas" => $number_of_replicas,
+        $this->deleteIndex();
+        $this->index->index->create([
+            'settings' => [
+                'number_of_shards' => 10,
+                'number_of_replicas' => 1,
+                'analysis' => [
+                    'analyzer' => [
+                        'ru_partial' => [
+                            'type' => 'custom',
+                            'tokenizer' => 'standard',
+                            'filter' => [
+                                'lowercase',
+                                // 'russian_morphology',
+                                'edge_ngram_filter'
+                            ]
+                        ]
+                    ],
+                    'filter' => [
+                        'edge_ngram_filter' => [
+                            'type' => 'edge_ngram',
+                            'min_gram' => 3,
+                            'max_gram' => 20
+                        ]
+                    ]
+                ]
+            ]
         ]);
+
+
+        $mapping2 = new Mapping();
+        $mapping2->setProperties($mapping);
+
+        $this->index->index->setMapping($mapping2);
     }
 
     function getMapping()

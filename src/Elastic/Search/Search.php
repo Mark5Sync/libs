@@ -41,6 +41,7 @@ class Search
     private ?array $highlightProps = null;
 
     private ?array $source = null;
+    private string | false | null $query = false;
 
 
     function __construct(private ElasticIndex $config)
@@ -48,7 +49,14 @@ class Search
         $this->index = $config->index->index;
     }
 
-    function fetch()
+    function query(&$query)
+    {
+        $this->query = &$query;
+
+        return $this;
+    }
+
+    function fetch(bool $raw = false)
     {
         $boolQuery = new BoolQuery();
 
@@ -82,6 +90,8 @@ class Search
         $this->setHighlight($query);
         $this->setSource($query);
 
+        if (is_null($this->query))
+            $this->query = json_encode($query->toArray());
 
         $results = $this->index->search($query);
     
@@ -95,6 +105,13 @@ class Search
                 break;
         }
             
+
+        if ($raw) {
+            $result = $results->getResponse()->getData();
+            $this->reset();
+
+            return $result;
+        }
 
 
         $result = $this->config->index->resultToArray($results, $this->highlightProps);
