@@ -10,6 +10,8 @@ abstract class BucketHandler
 {
     use s3;
 
+    protected string $version = "latest";
+    protected string $region;
     protected string $bucket;
     protected string $endpoint;
     protected string $key;
@@ -21,6 +23,8 @@ abstract class BucketHandler
             $this->endpoint,
             $this->key,
             $this->secret,
+            $this->region,
+            $this->version,
         ];
     }
 

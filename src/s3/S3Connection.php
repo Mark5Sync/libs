@@ -13,11 +13,11 @@ class S3Connection {
 
     final function __construct(private Bucket $parent)
     {
-        [$endpoint, $key, $secret] = $this->parent->getConnection();
+        [$endpoint, $key, $secret, $region, $version] = $this->parent->getConnection();
 
         $this->client = new S3Client([
-            'version' => 'latest',
-            'region'  => 'us-east-1',
+            'version' => $version,
+            'region'  => $region,
             'endpoint' => $endpoint,
             'use_path_style_endpoint' => true,
             'credentials' => [
