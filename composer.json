@@ -1,28 +1,28 @@
 {
-    "name": "marksync\/libs",
-    "description": "libs",
-    "type": "library",
-    "license": "MIT",
-    "autoload": {
-        "psr-4": {
-            "marksync_libs\\": "src\/"
-        }
-    },
-    "require": {
-        "marksync/provider": "^1.1",
-        "phpmailer/phpmailer": "^6.9",
-        "phpunit/php-text-template": "^4.0",
-        "aws/aws-sdk-php": "^3.316",
-        "denismitr/translit": "^3.0",
-        "ruflin/elastica": "^8.0",
-        "phpoffice/phpspreadsheet": "^4.0"
-    },
-    "scripts": {
-        "mark": "php vendor\/bin\/mark"
-    },
-    "config": {
-        "allow-plugins": {
-            "php-http/discovery": true
-        }
+  "name": "marksync/libs",
+  "description": "libs",
+  "type": "library",
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "marksync_libs\\": "src/"
     }
+  },
+  "require": {
+    "marksync/provider": "^1.1",
+    "phpmailer/phpmailer": "^6.9",
+    "phpunit/php-text-template": "^4.0",
+    "aws/aws-sdk-php": "^3.316",
+    "denismitr/translit": "^3.0",
+    "ruflin/elastica": "^8.0",
+    "phpoffice/phpspreadsheet": "^5.0"
+  },
+  "scripts": {
+    "mark": "php vendor/bin/mark"
+  },
+  "config": {
+    "allow-plugins": {
+      "php-http/discovery": true
+    }
+  }
 }
